@@ -3,6 +3,9 @@ name = "confluence-utils"
 version = "0.1.0"
 description = ""
 authors = ["Tevin Trout <ttrout@bellese.io>", "Scott Hamrick <shamrick@bellese.io>", "Andrew Lee <alee@bellese.io>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/Bellese/confluence-utils"
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -17,6 +20,7 @@ mypy = "^0.942"
 isort = "^5.10.1"
 pytest-cov = "^3.0.0"
 commitizen = "^2.24.0"
+python-semantic-release = "^7.28.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -55,3 +59,8 @@ exclude = '''
                      # the root of the project
 )
 '''
+
+[tool.semantic_release]
+version_toml = "pyproject.toml:tool.poetry.version"
+branch = "main"
+commit_message = "chore: release version {version}"

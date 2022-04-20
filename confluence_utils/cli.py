@@ -29,7 +29,7 @@ def cli() -> None:
     envvar=["CONFLUENCE_TOKEN"],
 )
 @click.argument("path", type=click.Path(exists=True, resolve_path=True))
-def publish(path: click.Path, url: str, space: str, token: str) -> None:
+def publish(path: str, url: str, space: str, token: str) -> None:
     if os.path.isfile(path):
         click.echo(f"publishing file: {path}")
     else:

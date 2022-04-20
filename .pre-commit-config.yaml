@@ -18,13 +18,13 @@ repos:
     rev: v0.942
     hooks:
       - id: mypy
-        additional_dependencies: [pydantic] # add if use pydantic
+        additional_dependencies: [click>=8.0.0]
   - repo: https://github.com/PyCQA/isort
     rev: 5.10.0
     hooks:
       - id: isort
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: master
+    rev: v2.24.0
     hooks:
       - id: commitizen
         stages: [commit-msg]
