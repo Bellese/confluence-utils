@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "confluence-utils"
+version = "0.1.0"
+description = ""
+authors = ["Tevin Trout <ttrout@bellese.io>", "Scott Hamrick <shamrick@bellese.io>", "Andrew Lee <alee@bellese.io>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+click = "^8"
+click-plugins = "^1.1.1"
+
+[tool.poetry.dev-dependencies]
+black = "^22.3.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+"confluence" = "confluence_utils.cli:cli"
