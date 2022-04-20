@@ -1,4 +1,4 @@
-# Confluence CLI
+# Confluence Utils
 
 ## Contributing
 
