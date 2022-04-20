@@ -4,7 +4,7 @@ import click
 
 
 @click.group()
-@click.version_option(prog_name="confluence-cli")
+@click.version_option(prog_name="confluence-utils")
 def cli() -> None:
     """Commandline interface for Confluence."""
 
