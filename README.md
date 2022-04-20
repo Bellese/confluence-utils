@@ -1,4 +1,4 @@
-# Confluence CLI
+# Confluence Utils
 
 ## Contributing
 
@@ -22,8 +22,11 @@
    $ cd confluence-utils
    $ poetry env use python
    ```
-1. Run `poetry install`
-1. Open VSCode
+1. Install dependencies and pre-commit hooks
+   ```console
+   $ poetry install && poetry run pre-commit install --hook-type commit-msg
+   ```
+1. (Optional) Open in VS Code
    ```console
    $ poetry shell
    $ code .
