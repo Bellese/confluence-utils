@@ -4,8 +4,9 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import frontmatter
 import mistune
+from mistune.plugins import plugin_abbr, plugin_def_list, plugin_task_lists
 
-from .confluence_renderer import ConfluenceRenderer
+from .confluence_renderer import ConfluenceRenderer, DirectiveConfluenceToc
 from .markdown_parser import parse
 
 
@@ -50,12 +51,17 @@ class MarkdownFile:
             update_file.write(f.getvalue().decode("utf-8"))
 
     def render_confluence_content(self) -> Tuple[str, List[str]]:
-        author_keys = self.front_matter.get("author_keys", [])
-        renderer = ConfluenceRenderer(authors=author_keys)
-        html_content = mistune.markdown(
-            self.markdown_content, renderer=renderer
+        renderer = ConfluenceRenderer()
+        markdown = mistune.Markdown(
+            renderer,
+            plugins=[
+                plugin_task_lists,
+                plugin_def_list,
+                plugin_abbr,
+                DirectiveConfluenceToc(),
+            ],
         )
-        body = renderer.single_column_layout(html_content)
-        attachments = renderer.attachments
+        body = markdown(self.markdown_content)
+        attachments: List[str] = []
 
         return body, attachments
