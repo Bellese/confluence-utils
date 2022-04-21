@@ -73,3 +73,9 @@ jobs:
       #----------------------------------------------
       - name: Check imports
         run: poetry run isort --check .
+
+      #----------------------------------------------
+      # Run tests
+      #----------------------------------------------
+      - name: Run tests
+        run: poetry run pytest
