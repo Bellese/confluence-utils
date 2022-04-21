@@ -1,22 +1,9 @@
 import os
 import textwrap
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, List, Optional
 from urllib.parse import urlparse
 
 import mistune
-
-
-def convert_to_confluence_content(
-    markdown: str, front_matter: Optional[Dict[str, Any]] = None
-) -> Tuple[str, List[Any]]:
-    if front_matter is None:
-        front_matter = {}
-    author_keys = front_matter.get("author_keys", [])
-    renderer = ConfluenceRenderer(authors=author_keys)
-    content_html = mistune.markdown(markdown, renderer=renderer)
-    page_html = renderer.single_column_layout(content_html)
-
-    return page_html, renderer.attachments
 
 
 class ConfluenceRenderer(mistune.HTMLRenderer):

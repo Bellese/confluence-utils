@@ -5,8 +5,7 @@ import click
 from atlassian import Confluence
 from tabulate import tabulate
 
-from .confluence_renderer import convert_to_confluence_content
-from .markdown_parser import parse
+from .markdown_file import MarkdownFile
 
 
 def client_options(function):  # type: ignore
@@ -74,24 +73,25 @@ def publish(path: str, url: str, space: str, token: str) -> None:
         token=token,
     )
 
-    if os.path.isfile(path):
-        filename = os.path.basename(path)
-        directory = os.path.dirname(path)
+    if os.path.isfile(path) and path.endswith(".md"):
 
-        click.echo(f"Publishing file: {filename} in {directory}")
+        markdown_file = MarkdownFile.from_path(path)
 
-        markdown, front_matter = parse(path)
-
-        page_html, attachments = convert_to_confluence_content(
-            markdown, front_matter
+        click.echo(
+            f"Publishing file: {markdown_file.filename} in"
+            f" {markdown_file.directory_name}"
         )
 
+        body, attachments = markdown_file.render_confluence_content()
+
         create_page_response = confluence.create_page(
-            space=space, title=front_matter.get("title"), body=page_html
+            space=space, title=markdown_file.title, body=body
         )
 
         for attachment in attachments:
-            attachment_absolution_path = os.path.join(directory, attachment)
+            attachment_absolution_path = os.path.join(
+                markdown_file.directory_name, attachment
+            )
             attachment_filename = os.path.basename(attachment_absolution_path)
 
             confluence.attach_file(
