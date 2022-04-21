@@ -20,6 +20,8 @@ class MarkdownFile:
         front_matter: Dict[str, Any],
         markdown_content: str,
         page_id: Optional[str] = None,
+        parent_file_path: Optional[str] = None,
+        parent_id: Optional[str] = None,
     ) -> None:
         self.absolute_path = absolute_path
         self.filename = filename
@@ -28,6 +30,8 @@ class MarkdownFile:
         self.front_matter = front_matter
         self.markdown_content = markdown_content
         self.page_id = page_id
+        self.parent_file_path = parent_file_path
+        self.parent_id = parent_id
 
     @classmethod
     def from_path(cls, absolute_path: str) -> "MarkdownFile":
@@ -40,11 +44,14 @@ class MarkdownFile:
             front_matter=front_matter,
             markdown_content=markdown_content,
             page_id=front_matter.get("page_id"),
+            parent_file_path=front_matter.get("parent_file_path"),
+            parent_id=front_matter.get("parent_id"),
         )
 
     def update_front_matter(self) -> None:
         file = frontmatter.load(self.absolute_path)
         file.metadata["page_id"] = self.page_id
+        file.metadata["parent_id"] = self.parent_id
         with open(self.absolute_path, "w") as update_file:
             f = BytesIO()
             frontmatter.dump(file, f)

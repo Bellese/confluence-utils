@@ -3,6 +3,7 @@ from typing import List, Optional
 
 import click
 from atlassian import Confluence
+from atlassian.errors import ApiError
 from tabulate import tabulate
 
 from .markdown_file import MarkdownFile
@@ -16,7 +17,7 @@ def client_options(function):  # type: ignore
             "The URL to the Confluence API. Optionally set with"
             " CONFLUENCE_URL."
         ),
-        envvar=["CONFLUENCE_API_URL"],
+        envvar=["CONFLUENCE_URL"],
     )(function)
     function = click.option(
         "--space",
@@ -58,6 +59,7 @@ def list_pages(url: str, space: str, token: str) -> None:
                 "id": page.get("id"),
                 "title": page.get("title"),
                 "url": page.get("_links").get("self"),
+
             }
         )
 
@@ -76,6 +78,28 @@ def publish(path: str, url: str, space: str, token: str) -> None:
     if os.path.isfile(path) and path.endswith(".md"):
 
         markdown_file = MarkdownFile.from_path(path)
+        if markdown_file.parent_file_path is not None:
+            parent_path = os.path.join(os.path.dirname(path),markdown_file.parent_file_path)
+            print(parent_path)
+            parent_file = MarkdownFile.from_path(parent_path)
+            #maybe add space validation here
+            if parent_file.page_id is not None:
+                markdown_file.parent_id = parent_file.page_id
+                markdown_file.update_front_matter()
+            elif parent_file.page_id is None:
+                #check if the page exist but the page id is not set
+                if confluence.page_exists(
+                    space=space, title=parent_file.title
+                ):
+                    parent_id = confluence.get_page_id(space, parent_file.title)
+                    parent_file.page_id = parent_id
+                    markdown_file.parent_id = parent_id
+                    markdown_file.update_front_matter()
+                    parent_file.update_front_matter()
+                else:
+                    click.echo(f"parent page does not exist skipping: {path}")
+                    return
+
 
         click.echo(
             f"Publishing file: {markdown_file.filename} in"
@@ -83,10 +107,11 @@ def publish(path: str, url: str, space: str, token: str) -> None:
         )
 
         body, attachments = markdown_file.render_confluence_content()
-
-        if not markdown_file.page_id and confluence.page_exists(
+        page_with_title_exist = confluence.page_exists(
             space=space, title=markdown_file.title
-        ):
+        )
+
+        if not markdown_file.page_id and page_with_title_exist:
             page_id = confluence.get_page_id(space, markdown_file.title)
             markdown_file.page_id = page_id
             markdown_file.update_front_matter()
@@ -94,15 +119,29 @@ def publish(path: str, url: str, space: str, token: str) -> None:
                 page_id=markdown_file.page_id,
                 title=markdown_file.title,
                 body=body,
+                parent_id=markdown_file.parent_id,
             )
             click.echo(
                 f"Updated page with page_id {update_page_response.get('id')}"
             )
-        elif markdown_file.page_id:
+        elif markdown_file.page_id and page_with_title_exist:
+            #look up page id to make sure confluence is aware of it
+            checkedSpace = None
+            try:
+                checkedSpace = confluence.get_page_space(markdown_file.page_id)
+            except ApiError:
+                pass
+            if checkedSpace is None or checkedSpace != space:
+                #the page exist but the page id is bung so fix the page id
+                page_id = confluence.get_page_id(space, markdown_file.title)
+                markdown_file.page_id = page_id
+                markdown_file.update_front_matter()
+
             update_page_response = confluence.update_page(
                 page_id=markdown_file.page_id,
                 title=markdown_file.title,
                 body=body,
+                parent_id=markdown_file.parent_id,
             )
             click.echo(
                 f"Updated page with page_id {update_page_response.get('id')}"
@@ -126,6 +165,7 @@ def publish(path: str, url: str, space: str, token: str) -> None:
                 name=attachment_filename,
                 page_id=page_id,
                 space=space,
+                parent_id=markdown_file.parent_id,
             )
     else:
         click.echo(f"publishing directory: {path}")
