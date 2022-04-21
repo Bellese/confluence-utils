@@ -1,6 +1,8 @@
 import os
-from typing import Any, Dict, List, Tuple
+from io import BytesIO
+from typing import Any, Dict, List, Optional, Tuple
 
+import frontmatter
 import mistune
 
 from .confluence_renderer import ConfluenceRenderer
@@ -16,6 +18,7 @@ class MarkdownFile:
         title: str,
         front_matter: Dict[str, Any],
         markdown_content: str,
+        page_id: Optional[str] = None,
     ) -> None:
         self.absolute_path = absolute_path
         self.filename = filename
@@ -23,6 +26,7 @@ class MarkdownFile:
         self.title = title
         self.front_matter = front_matter
         self.markdown_content = markdown_content
+        self.page_id = page_id
 
     @classmethod
     def from_path(cls, absolute_path: str) -> "MarkdownFile":
@@ -34,7 +38,16 @@ class MarkdownFile:
             title=front_matter.get("title"),
             front_matter=front_matter,
             markdown_content=markdown_content,
+            page_id=front_matter.get("page_id"),
         )
+
+    def update_front_matter(self) -> None:
+        file = frontmatter.load(self.absolute_path)
+        file.metadata["page_id"] = self.page_id
+        with open(self.absolute_path, "w") as update_file:
+            f = BytesIO()
+            frontmatter.dump(file, f)
+            update_file.write(f.getvalue().decode("utf-8"))
 
     def render_confluence_content(self) -> Tuple[str, List[str]]:
         author_keys = self.front_matter.get("author_keys", [])
