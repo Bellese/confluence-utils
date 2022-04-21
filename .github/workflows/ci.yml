@@ -78,4 +78,4 @@ jobs:
       # Run tests
       #----------------------------------------------
       - name: Run tests
-        run: poetry run pytest
+        run: poetry run pytest --cov=confluence_utils tests/

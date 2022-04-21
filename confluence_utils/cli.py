@@ -1,4 +1,5 @@
 import os
+from typing import List, Optional
 
 import click
 from atlassian import Confluence
@@ -67,3 +68,15 @@ def publish(path: str, url: str, space: str, token: str) -> None:
             )
     else:
         click.echo(f"publishing directory: {path}")
+        click.echo(get_files(path, ".md"))
+
+
+def get_files(path: str, extension_filter: Optional[str] = None) -> List[str]:
+    files = []
+    for root, d_names, f_names in os.walk(path):
+        for f in f_names:
+            files.append(os.path.join(root, f))
+    if extension_filter:
+        return [s for s in files if s.endswith(extension_filter)]
+    else:
+        return files
