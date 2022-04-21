@@ -84,22 +84,33 @@ def publish(path: str, url: str, space: str, token: str) -> None:
 
         body, attachments = markdown_file.render_confluence_content()
 
-        create_page_response = confluence.create_page(
-            space=space, title=markdown_file.title, body=body
-        )
-
-        for attachment in attachments:
-            attachment_absolution_path = os.path.join(
-                markdown_file.directory_name, attachment
+        if confluence.page_exists(space=space, title=markdown_file.title):
+            page_id = confluence.get_page_id(space, markdown_file.title)
+            update_page_response = confluence.update_page(
+                page_id, title=markdown_file.title, body=body
             )
-            attachment_filename = os.path.basename(attachment_absolution_path)
-
-            confluence.attach_file(
-                filename=attachment_absolution_path,
-                name=attachment_filename,
-                page_id=create_page_response.get("page_id"),
-                space=space,
+            click.echo(
+                f"Updated page with page_id {update_page_response.get('id')}"
             )
+        else:
+            create_page_response = confluence.create_page(
+                space=space, title=markdown_file.title, body=body
+            )
+
+            for attachment in attachments:
+                attachment_absolution_path = os.path.join(
+                    markdown_file.directory_name, attachment
+                )
+                attachment_filename = os.path.basename(
+                    attachment_absolution_path
+                )
+
+                confluence.attach_file(
+                    filename=attachment_absolution_path,
+                    name=attachment_filename,
+                    page_id=create_page_response.get("page_id"),
+                    space=space,
+                )
     else:
         click.echo(f"publishing directory: {path}")
         click.echo(get_files(path, ".md"))
