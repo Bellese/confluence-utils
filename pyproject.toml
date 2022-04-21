@@ -11,6 +11,9 @@ repository = "https://github.com/Bellese/confluence-utils"
 python = "^3.7"
 click = "^8"
 click-plugins = "^1.1.1"
+mistune = "^2.0.2"
+python-frontmatter = "^1.0.0"
+atlassian-python-api = "^3.21.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
@@ -37,6 +40,7 @@ use_parentheses = true
 line_length = 79
 
 [tool.black]
+preview = true
 line-length = 79
 target-version = ['py38']
 include = '\.pyi?$'
