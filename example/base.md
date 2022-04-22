@@ -1,8 +1,5 @@
 ---
-title: TEST_DAD
-space:
-    ~de1997:
-        parent_id:
+title: base_example
 ---
 
 # Markdown: Syntax

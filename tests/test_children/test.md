@@ -1,6 +1,6 @@
 ---
-parent_file_path: ../test_parent.md
-title: TEST
+parent_file_path: ../test.md
+title: TEST_CHILD
 ---
 
 # Markdown: Syntax
