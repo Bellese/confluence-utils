@@ -34,8 +34,14 @@ class MarkdownFile:
         self.parent_id = parent_id
 
     @classmethod
-    def from_path(cls, absolute_path: str) -> "MarkdownFile":
+    def from_path(cls, absolute_path: str, space: str) -> "MarkdownFile":
         markdown_content, front_matter = parse(absolute_path)
+        spaces = front_matter.get("spaces")
+        current_space = None
+        if spaces is None or spaces.get(space) is None:
+            current_space = dict()
+        else:
+            current_space = spaces.get(space)
         return MarkdownFile(
             absolute_path=absolute_path,
             filename=os.path.basename(absolute_path),
@@ -43,15 +49,21 @@ class MarkdownFile:
             title=front_matter.get("title"),
             front_matter=front_matter,
             markdown_content=markdown_content,
-            page_id=front_matter.get("page_id"),
+            page_id=current_space.get("page_id"),
             parent_file_path=front_matter.get("parent_file_path"),
-            parent_id=front_matter.get("parent_id"),
+            parent_id=current_space.get("page_id"),
         )
 
-    def update_front_matter(self) -> None:
+    def update_front_matter(self, space: str) -> None:
         file = frontmatter.load(self.absolute_path)
-        file.metadata["page_id"] = self.page_id
-        file.metadata["parent_id"] = self.parent_id
+        spaces = file.metadata.get("spaces")
+        if spaces is None:
+            spaces = dict()
+        current_space = dict()
+        current_space["page_id"] = self.page_id
+        current_space["parent_id"] = self.parent_id
+        spaces[space] = current_space
+        file.metadata["spaces"] = spaces
         with open(self.absolute_path, "w") as update_file:
             f = BytesIO()
             frontmatter.dump(file, f)
