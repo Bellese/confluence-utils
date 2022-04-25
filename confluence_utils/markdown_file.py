@@ -51,7 +51,7 @@ class MarkdownFile:
             markdown_content=markdown_content,
             page_id=current_space.get("page_id"),
             parent_file_path=front_matter.get("parent_file_path"),
-            parent_id=current_space.get("page_id"),
+            parent_id=current_space.get("parent_id"),
         )
 
     def update_front_matter(self, space: str) -> None:

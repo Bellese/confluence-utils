@@ -147,6 +147,7 @@ def publish_file(path: str, space: str, confluence: Confluence) -> None:
             body=body,
             parent_id=markdown_file.parent_id,
         )
+
         click.echo(
             f"Updated page with page_id {update_page_response.get('id')}"
         )
