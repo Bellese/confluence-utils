@@ -153,7 +153,10 @@ def publish_file(path: str, space: str, confluence: Confluence) -> None:
         )
     else:
         create_page_response = confluence.create_page(
-            space=space, title=markdown_file.title, body=body
+            space=space,
+            title=markdown_file.title,
+            body=body,
+            parent_id=markdown_file.parent_id,
         )
         page_id = create_page_response.get("id")
         markdown_file.page_id = page_id
