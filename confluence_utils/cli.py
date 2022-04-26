@@ -162,18 +162,19 @@ def publish_file(path: str, space: str, confluence: Confluence) -> None:
         markdown_file.page_id = page_id
         markdown_file.update_front_matter(space)
 
-    for attachment in attachments:
-        attachment_absolution_path = os.path.join(
-            markdown_file.directory_name, attachment
-        )
-        attachment_filename = os.path.basename(attachment_absolution_path)
-        click.echo(f"image is at {attachment_absolution_path}")
-        confluence.attach_file(
-            filename=attachment_absolution_path,
-            name=attachment_filename,
-            page_id=page_id,
-            space=space,
-        )
+    if markdown_file.page_id:
+        for attachment in attachments:
+            attachment_absolution_path = os.path.join(
+                markdown_file.directory_name, attachment
+            )
+            attachment_filename = os.path.basename(attachment_absolution_path)
+
+            confluence.attach_file(
+                filename=attachment_absolution_path,
+                name=attachment_filename,
+                page_id=markdown_file.page_id,
+                space=space,
+            )
 
 
 def get_files(path: str, extension_filter: Optional[str] = None) -> List[str]:
