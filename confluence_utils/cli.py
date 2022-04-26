@@ -130,12 +130,12 @@ def publish_file(path: str, space: str, confluence: Confluence) -> None:
         )
     elif markdown_file.page_id and page_with_title_exist:
         # look up page id to make sure confluence is aware of it
-        checkedSpace = None
+        checked_space = None
         try:
-            checkedSpace = confluence.get_page_space(markdown_file.page_id)
+            checked_space = confluence.get_page_space(markdown_file.page_id)
         except ApiError:
             pass
-        if checkedSpace is None or checkedSpace != space:
+        if checked_space is None or checked_space != space:
             # the page exist but the page id is bung so fix the page id
             page_id = confluence.get_page_id(space, markdown_file.title)
             markdown_file.page_id = page_id
@@ -167,13 +167,12 @@ def publish_file(path: str, space: str, confluence: Confluence) -> None:
             markdown_file.directory_name, attachment
         )
         attachment_filename = os.path.basename(attachment_absolution_path)
-
+        click.echo(f"image is at {attachment_absolution_path}")
         confluence.attach_file(
             filename=attachment_absolution_path,
             name=attachment_filename,
             page_id=page_id,
             space=space,
-            parent_id=markdown_file.parent_id,
         )
 
 
