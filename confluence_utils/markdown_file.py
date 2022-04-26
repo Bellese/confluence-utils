@@ -51,7 +51,6 @@ class MarkdownFile:
             markdown_content=markdown_content,
             page_id=current_space.get("page_id"),
             parent_file_path=front_matter.get("parent_file_path"),
-            parent_id=current_space.get("parent_id"),
         )
 
     def update_front_matter(self, space: str) -> None:
@@ -61,7 +60,6 @@ class MarkdownFile:
             spaces = dict()
         current_space = dict()
         current_space["page_id"] = self.page_id
-        current_space["parent_id"] = self.parent_id
         spaces[space] = current_space
         file.metadata["spaces"] = spaces
         with open(self.absolute_path, "w") as update_file:
