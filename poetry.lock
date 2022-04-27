@@ -131,7 +131,7 @@ importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
 name = "click-log"
 version = "0.4.0"
 description = "Logging integration for Click"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -959,7 +959,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "03a4fbe64399cbd111c20271fdab66ddb601f30a7ab29082d1ec99ec5002cf0a"
+content-hash = "a16e45891e9cd3155f4d096aabdfd0d3a7d93dfc6bfaea76220e5b4f3334c878"
 
 [metadata.files]
 atlassian-python-api = [
