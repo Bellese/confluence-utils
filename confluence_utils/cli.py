@@ -109,11 +109,10 @@ def publish_files(
                         parent_page_id, space
                     )
                 else:
-                    click.echo(
+                    raise click.ClickException(
                         "Parent page does not exist:"
                         f" {markdown_file.parent_file_path}"
                     )
-                    sys.exit(1)
 
             page_with_title_exist = confluence.page_exists(
                 space=space, title=markdown_file.title
@@ -146,11 +145,10 @@ def publish_files(
                     space, markdown_file.title
                 )
                 if markdown_file.get_page_id_for_space(space) != saved_page_id:
-                    click.echo(
-                        "Could not update to new title. "
-                        f"Page with title {markdown_file.title} already exist"
+                    raise click.ClickException(
+                        "Could not update to new title. Page with title"
+                        f" {markdown_file.title} already exists"
                     )
-                    return
 
                 confluence.update_page(
                     page_id=markdown_file.get_page_id_for_space(space),
