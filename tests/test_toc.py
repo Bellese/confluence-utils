@@ -22,6 +22,9 @@ class TestPluginToc(BaseTestCase):
             ],
         )
         html = markdown(text)
+        for link in renderer.links:
+            html = html.replace(renderer.links[link], link)
+
         return html
 
     def assert_case(self, name, text, html):
