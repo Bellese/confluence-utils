@@ -1,8 +1,9 @@
 name: Publish to pypi
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   publish:
