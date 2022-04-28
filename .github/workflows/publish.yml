@@ -1,9 +1,12 @@
-name: CI
+name: Publish to pypi
 
-on: pull_request
+on:
+  push:
+    tags:
+      - "v*"
 
 jobs:
-  test:
+  publish:
     runs-on: ubuntu-latest
     steps:
       #----------------------------------------------
@@ -51,31 +54,13 @@ jobs:
         run: poetry install --no-interaction
 
       #----------------------------------------------
-      # Run linter
+      # Run build
       #----------------------------------------------
-      - name: Run linter
-        run: poetry run flake8 .
+      - name: Run build
+        run: poetry build
 
       #----------------------------------------------
-      # Check format
+      # Publish to pypi
       #----------------------------------------------
-      - name: Check format
-        run: poetry run black --check .
-
-      #----------------------------------------------
-      # Check static types
-      #----------------------------------------------
-      - name: Check static types
-        run: poetry run mypy .
-
-      #----------------------------------------------
-      # Check imports
-      #----------------------------------------------
-      - name: Check imports
-        run: poetry run isort --check .
-
-      #----------------------------------------------
-      # Run tests
-      #----------------------------------------------
-      - name: Run tests
-        run: poetry run pytest --cov=confluence_utils tests/
+      - name: Publish to pypi
+        run: poetry publish
