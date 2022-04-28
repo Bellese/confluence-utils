@@ -76,11 +76,19 @@ def publish(path: str, url: str, space: str, token: str) -> None:
             token=token,
         )
 
+        space_information = confluence.get_space(space)
+        homepage = space_information.get("homepage")
+        homepage_id = None
+        if homepage is not None:
+            homepage_id = homepage.get("id")
+
         if os.path.isfile(path) and path.endswith(".md"):
-            publish_files([path], space, confluence)
+            publish_files([path], space, confluence, homepage_id)
 
         elif os.path.isdir(path):
-            publish_files(get_files(path, ".md"), space, confluence)
+            publish_files(
+                get_files(path, ".md"), space, confluence, homepage_id
+            )
 
     except click.ClickException as e:
         e.show()
@@ -88,7 +96,10 @@ def publish(path: str, url: str, space: str, token: str) -> None:
 
 
 def publish_files(
-    paths: List[str], space: str, confluence: Confluence
+    paths: List[str],
+    space: str,
+    confluence: Confluence,
+    default_parent_id: Optional[str] = None,
 ) -> None:
     for path in paths:
         try:
@@ -131,7 +142,7 @@ def publish_files(
                     body=markdown_file.html,
                     parent_id=markdown_file.parent.get_page_id_for_space(space)
                     if markdown_file.parent
-                    else None,
+                    else default_parent_id,
                 )
                 click.echo(
                     "Updated page with page_id"
@@ -157,7 +168,7 @@ def publish_files(
                     body=markdown_file.html,
                     parent_id=markdown_file.parent.get_page_id_for_space(space)
                     if markdown_file.parent
-                    else None,
+                    else default_parent_id,
                 )
 
                 click.echo(
@@ -171,7 +182,7 @@ def publish_files(
                     body=markdown_file.html,
                     parent_id=markdown_file.parent.get_page_id_for_space(space)
                     if markdown_file.parent
-                    else None,
+                    else default_parent_id,
                 )
                 page_id = create_page_response.get("id")
                 markdown_file.set_page_id_for_space(page_id, space)
