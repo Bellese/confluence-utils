@@ -3,9 +3,9 @@
 ## Prerequisites
 
 1. Install [pyenv](https://github.com/pyenv/pyenv)
-1. Install Python 3.7
+1. Install Python 3.8+
    ```console
-   $ pyenv install 3.7.13
+   $ pyenv install 3.8.13
    ```
 1. Install [Poetry](https://python-poetry.org/)
 

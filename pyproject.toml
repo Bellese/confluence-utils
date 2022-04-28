@@ -68,8 +68,8 @@ exclude = '''
 
 [tool.semantic_release]
 version_toml = "pyproject.toml:tool.poetry.version"
-version_variable = "confluence_utils/cli.py:__version__"
+version_variable = "confluence_utils/__init__.py:__version__"
 branch = "main"
 commit_subject = "chore: release version {version}"
 upload_to_repository = false
-upload_to_release = false
+build_command = "poetry build"
