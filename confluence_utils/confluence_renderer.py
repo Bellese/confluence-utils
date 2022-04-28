@@ -1,5 +1,6 @@
 import os
-from typing import List, Optional
+import uuid
+from typing import Dict, List, Optional
 from urllib.parse import urlparse
 
 import mistune
@@ -33,6 +34,7 @@ def render_html_toc_confluence(items, title, depth):  # type: ignore
 class ConfluenceRenderer(mistune.HTMLRenderer):
     def __init__(self) -> None:
         self.attachments: List[str] = []
+        self.links: Dict[str, str] = {}
         super().__init__()
 
     def block_code(self, code: str, lang: Optional[str] = None) -> str:
@@ -49,6 +51,19 @@ class ConfluenceRenderer(mistune.HTMLRenderer):
             c=code,
             l=lang or "",
         )
+
+    def link(
+        self,
+        link: str,
+        text: Optional[str] = None,
+        title: Optional[str] = None,
+    ) -> str:
+        is_external = bool(urlparse(link).netloc)
+        if not is_external:
+            replacement_text = str(uuid.uuid4())
+            self.links[link] = replacement_text
+            link = replacement_text
+        return super().link(link, text, title)
 
     def image(
         self, src: str, alt: str = "", title: Optional[str] = None

@@ -104,6 +104,7 @@ def publish_files(
     for path in paths:
         try:
             markdown_file = MarkdownFile(path)
+            markdown_file.resolve_links()
 
             # maybe add space validation here
             if (

@@ -35,6 +35,16 @@ class MarkdownFile(object):
         )
 
         self.html = md(self._raw_markdown)
+        self.links = {}
+        for link in renderer.links:
+            resolved_link = os.path.normpath(
+                os.path.join(
+                    os.path.dirname(self.path),
+                    link,
+                )
+            )
+            self.links[resolved_link] = renderer.links[link]
+
         self._attachments = renderer.attachments
 
     @property
@@ -117,6 +127,13 @@ class MarkdownFile(object):
             if self.parent_file_path is not None
             else None
         )
+
+    def resolve_links(self) -> None:
+        for link in self.links:
+            temporary_file = MarkdownFile(link)
+            self.html = self.html.replace(
+                self.links[link], temporary_file.title
+            )
 
     def _save(self) -> None:
         file = frontmatter.load(self.path)
