@@ -1,10 +1,8 @@
 import mistune
 from mistune.plugins import plugin_abbr, plugin_def_list, plugin_task_lists
 
-from confluence_utils.confluence_renderer import (
-    ConfluenceRenderer,
-    DirectiveConfluenceToc,
-)
+from confluence_utils.confluence_directives import DirectiveConfluenceToc
+from confluence_utils.confluence_renderer import ConfluenceRenderer
 from tests import BaseTestCase
 
 

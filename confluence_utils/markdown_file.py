@@ -6,7 +6,11 @@ import frontmatter
 import mistune
 from mistune.plugins import plugin_abbr, plugin_def_list, plugin_task_lists
 
-from .confluence_renderer import ConfluenceRenderer, DirectiveConfluenceToc
+from .confluence_directives import (
+    DirectiveConfluenceStyles,
+    DirectiveConfluenceToc,
+)
+from .confluence_renderer import ConfluenceRenderer
 from .markdown_parser import parse
 
 
@@ -31,6 +35,7 @@ class MarkdownFile(object):
                 plugin_def_list,
                 plugin_abbr,
                 DirectiveConfluenceToc(),
+                DirectiveConfluenceStyles(os.path.dirname(self.path)),
             ],
         )
 

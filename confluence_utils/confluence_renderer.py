@@ -3,31 +3,6 @@ from typing import List, Optional
 from urllib.parse import urlparse
 
 import mistune
-from mistune.directives import DirectiveToc
-
-
-class DirectiveConfluenceToc(DirectiveToc):
-    def __call__(self, md):  # type: ignore
-        self.register_directive(md, "toc")
-        self.register_plugin(md)
-
-        if md.renderer.NAME == "html":
-            md.renderer.register("toc", render_html_toc_confluence)
-
-
-def render_html_toc_confluence(items, title, depth):  # type: ignore
-    html = '<section class="toc">\n'
-
-    if title:
-        html += "<h1>" + title + "</h1>\n"
-
-    html += '<ac:structured-macro ac:name="toc" ac:schema-version="1">\n'
-    html += '<ac:parameter ac:name="exclude">\n'
-    html += "^(Authors|Table of Contents)$\n"
-    html += "</ac:parameter>\n"
-    html += "</ac:structured-macro>\n"
-
-    return html + "</section>\n"
 
 
 class ConfluenceRenderer(mistune.HTMLRenderer):
@@ -53,14 +28,18 @@ class ConfluenceRenderer(mistune.HTMLRenderer):
     def image(
         self, src: str, alt: str = "", title: Optional[str] = None
     ) -> str:
-        is_external = bool(urlparse(src).netloc)
 
+        html = "<ac:image>\n"
+
+        is_external = bool(urlparse(src).netloc)
         if is_external:
             image_tag = '<ri:url ri:value="{}" />'.format(src)
         else:
-            image_tag = '<ri:attachment ri:filename="{}" />'.format(
+            self.attachments.append(src)
+            image_tag = '<ri:attachment ri:filename="{}" />\n'.format(
                 os.path.basename(src)
             )
-            self.attachments.append(src)
 
-        return "<ac:image>{image_tag}</ac:image>".format(image_tag=image_tag)
+        html += image_tag
+        html += "</ac:image>\n"
+        return html

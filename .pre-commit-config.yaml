@@ -33,3 +33,4 @@ repos:
     hooks:
       - id: prettier
         types: [markdown]
+        exclude: CHANGELOG.md
