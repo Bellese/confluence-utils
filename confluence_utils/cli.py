@@ -6,6 +6,7 @@ import click
 from atlassian import Confluence
 from tabulate import tabulate
 
+from . import __version__
 from .markdown_file import MarkdownFile
 
 
@@ -35,7 +36,7 @@ def client_options(function):  # type: ignore
 
 
 @click.group()
-@click.version_option(prog_name="confluence-utils")
+@click.version_option(version=__version__, prog_name="confluence-utils")
 def cli() -> None:
     """Commandline utils for Confluence."""
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "confluence-utils"
-version = "0.1.0"
+version = "0.0.0"
 description = ""
 authors = ["Tevin Trout <ttrout@bellese.io>", "Scott Hamrick <shamrick@bellese.io>", "Andrew Lee <alee@bellese.io>"]
 license = "MIT"
@@ -68,5 +68,7 @@ exclude = '''
 
 [tool.semantic_release]
 version_toml = "pyproject.toml:tool.poetry.version"
+version_variable = "codex_cli_github_plugin/cli.py:__version__"
 branch = "main"
-commit_message = "chore: release version {version}"
+commit_subject = "chore: release version {version}"
+upload_to_repository = false
