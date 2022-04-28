@@ -63,3 +63,5 @@ jobs:
       #----------------------------------------------
       - name: Create release
         run: poetry run semantic-release publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
