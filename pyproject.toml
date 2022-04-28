@@ -68,7 +68,7 @@ exclude = '''
 
 [tool.semantic_release]
 version_toml = "pyproject.toml:tool.poetry.version"
-version_variable = "codex_cli_github_plugin/cli.py:__version__"
+version_variable = "confluence_utils/cli.py:__version__"
 branch = "main"
 commit_subject = "chore: release version {version}"
 upload_to_repository = false
