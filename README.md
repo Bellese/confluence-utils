@@ -1,62 +1,38 @@
 # Confluence Utils
 
-## Contributing
+CLI Utilities for Confluence.
 
-### Prerequisites
+## Installation
 
-1. Install [pyenv](https://github.com/pyenv/pyenv)
-1. Install Python 3.7
-   ```console
-   $ pyenv install 3.7.13
-   ```
-1. Install [Poetry](https://python-poetry.org/)
+### System Requirements
 
-### Setup
+1. Python 3.7+
 
-1. Clone the project.
-   ```console
-   $ git clone git@github.com:Bellese/confluence-utils.git
-   ```
-1. From the project root, set the project Python version
-   ```console
-   $ cd confluence-utils
-   $ poetry env use python
-   ```
-1. Install dependencies and pre-commit hooks
-   ```console
-   $ poetry install && poetry run pre-commit install --hook-type commit-msg
-   ```
-1. (Optional) Open in VS Code
-   ```console
-   $ poetry shell
-   $ code .
-   ```
+### Install with `pipx` (recommended)
 
-## Testing Locally
+1. Install [`pipx`](https://pypa.github.io/pipx/)
+1. Run `pipx install confluence-utils`
+
+### Install with `pip`:
+
+1. Run `pip install confluence-utils`
+
+## Usage
+
+### Commands
+
+#### `publish`
 
 ```console
-$ poetry run confluence --help
-Usage: confluence [OPTIONS] COMMAND [ARGS]...
-
-  Commandline interface for Confluence.
-
-Options:
-  --version  Show the version and exit.
-  --help     Show this message and exit.
-
-Commands:
-  publish
-
-$ poetry run confluence publish --help
+$ confluence publish --help
 Usage: confluence publish [OPTIONS] PATH
 
 Options:
-  --url TEXT    The URL to the Confluence API. Optionally set with
-                CONFLUENCE_URL.  [required]
-  --space TEXT  Confluence API Space. Optionally set with CONFLUENCE_SPACE.
-                [required]
   --token TEXT  Confluence API Token. Optionally set with CONFLUENCE_TOKEN.
                 [required]
+  --space TEXT  Confluence Space. Optionally set with CONFLUENCE_SPACE.
+                [required]
+  --url TEXT    The URL to the Confluence API. Optionally set with
+                CONFLUENCE_URL.  [required]
   --help        Show this message and exit.
-
 ```
