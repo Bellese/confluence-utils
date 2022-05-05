@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.1 (2022-05-05)
+### Fix
+* **markdown_file.py:** Add tables plugin ([#8](https://github.com/Bellese/confluence-utils/issues/8)) ([`825f487`](https://github.com/Bellese/confluence-utils/commit/825f4873edccca99ee638d9dfe64781d98082f00))
+
 ## v0.4.0 (2022-04-28)
 ### Feature
 * Adding in logic to convert local links to confluence links ([`dd74bf5`](https://github.com/Bellese/confluence-utils/commit/dd74bf5a19589b3ffb5f5f998da63c20112ba3f2))
