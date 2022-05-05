@@ -4,7 +4,12 @@ from typing import List, Optional
 
 import frontmatter
 import mistune
-from mistune.plugins import plugin_abbr, plugin_def_list, plugin_task_lists
+from mistune.plugins import (
+    plugin_abbr,
+    plugin_def_list,
+    plugin_table,
+    plugin_task_lists,
+)
 
 from .confluence_directives import (
     DirectiveConfluenceStyles,
@@ -34,6 +39,7 @@ class MarkdownFile(object):
                 plugin_task_lists,
                 plugin_def_list,
                 plugin_abbr,
+                plugin_table,
                 DirectiveConfluenceToc(),
                 DirectiveConfluenceStyles(os.path.dirname(self.path)),
             ],
