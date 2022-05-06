@@ -69,7 +69,20 @@ def list_pages(url: str, space: str, token: str) -> None:
 @cli.command()
 @client_options
 @click.argument("path", type=click.Path(exists=True, resolve_path=True))
-def publish(path: str, url: str, space: str, token: str) -> None:
+@click.option(
+    "--ignore-path",
+    "ignore_paths",
+    multiple=True,
+    help="Paths to ignore when converting markdown",
+    type=click.Path(exists=True, resolve_path=True),
+)
+def publish(
+    path: str,
+    url: str,
+    space: str,
+    token: str,
+    ignore_paths: List[str] = [],
+) -> None:
     try:
         confluence = Confluence(
             url=url,
@@ -82,12 +95,19 @@ def publish(path: str, url: str, space: str, token: str) -> None:
         if homepage is not None:
             homepage_id = homepage.get("id")
 
-        if os.path.isfile(path) and path.endswith(".md"):
+        if (
+            os.path.isfile(path)
+            and path.endswith(".md")
+            and not subpath_in_paths(ignore_paths, path)
+        ):
             publish_files([path], space, confluence, homepage_id)
 
         elif os.path.isdir(path):
             publish_files(
-                get_files(path, ".md"), space, confluence, homepage_id
+                get_files(path, ".md", ignore_paths),
+                space,
+                confluence,
+                homepage_id,
             )
 
     except click.ClickException as e:
@@ -203,12 +223,28 @@ def publish_files(
             raise click.FileError(path, hint=str(e))
 
 
-def get_files(path: str, extension_filter: Optional[str] = None) -> List[str]:
+def get_files(
+    path: str,
+    extension_filter: Optional[str] = None,
+    ignore_paths: List[str] = [],
+) -> List[str]:
     files = []
     for root, d_names, f_names in os.walk(path):
         for f in f_names:
-            files.append(os.path.join(root, f))
+            current_path = os.path.join(root, f)
+            if subpath_in_paths(ignore_paths, current_path):
+                continue
+            else:
+                files.append(current_path)
+
     if extension_filter:
         return [s for s in files if s.endswith(extension_filter)]
     else:
         return files
+
+
+def subpath_in_paths(paths: List[str], subpath: str) -> bool:
+    for path in paths:
+        if os.path.commonpath([path]) == os.path.commonpath([path, subpath]):
+            return True
+    return False
