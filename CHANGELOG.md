@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.5.0 (2022-05-06)
+### Feature
+* **cli.py:** Adding new option --ignore-path to ignore certain paths ([#9](https://github.com/Bellese/confluence-utils/issues/9)) ([`e7cdf93`](https://github.com/Bellese/confluence-utils/commit/e7cdf933c5aef9f813f1d3c0774e862b42bb6edc))
+
 ## v0.4.1 (2022-05-05)
 ### Fix
 * **markdown_file.py:** Add tables plugin ([#8](https://github.com/Bellese/confluence-utils/issues/8)) ([`825f487`](https://github.com/Bellese/confluence-utils/commit/825f4873edccca99ee638d9dfe64781d98082f00))
