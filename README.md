@@ -7,6 +7,16 @@ CLI Utilities for Confluence.
 ### System Requirements
 
 1. Python 3.7+
+2. [Cairo](https://cairographics.org/)
+
+#### Installing Cairo
+
+For mac systems you can use homebrew and run `brew install cairo`
+
+For alpine linux run
+`apk add --no-cache build-base cairo-dev cairo cairo-tools jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev`
+
+For all other systems follow the instructions on [cairo's download page](https://cairographics.org/download/)
 
 ### Install with `pipx` (recommended)
 
