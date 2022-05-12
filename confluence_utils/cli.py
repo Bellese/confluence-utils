@@ -1,7 +1,9 @@
 import os
 import sys
+import xml.etree.ElementTree as ET
 from typing import List, Optional
 
+import cairosvg
 import click
 from atlassian import Confluence
 from tabulate import tabulate
@@ -212,15 +214,51 @@ def publish_files(
 
             if markdown_file.get_page_id_for_space(space):
                 for attachment in markdown_file.attachments:
-                    confluence.attach_file(
-                        filename=attachment,
-                        name=os.path.basename(attachment),
-                        page_id=markdown_file.get_page_id_for_space(space),
-                        space=space,
+                    full_filename = os.path.splitext(
+                        os.path.basename(attachment)
                     )
+                    file_ext = full_filename[1]
+                    filename = full_filename[0]
+                    if file_ext.lower() != ".svg":
+                        confluence.attach_file(
+                            filename=attachment,
+                            name=filename + file_ext,
+                            page_id=markdown_file.get_page_id_for_space(space),
+                            space=space,
+                        )
+                    else:
+
+                        imagestring = open(attachment).read().encode("utf-8")
+
+                        # for some reason we sometimes get back bad svgs
+                        # so we need to handle these bad tags and remove them
+                        root = ET.fromstring(imagestring)
+                        cleanup_svg(root)
+                        imagestring = ET.tostring(
+                            root, encoding="utf-8", method="xml"
+                        )
+
+                        bytestring = cairosvg.svg2png(imagestring)
+                        confluence.attach_content(
+                            content=bytestring,
+                            name=filename + "_svg" + ".png",
+                            page_id=markdown_file.get_page_id_for_space(space),
+                            space=space,
+                        )
 
         except FileNotFoundError as e:
             raise click.FileError(path, hint=str(e))
+
+
+def cleanup_svg(root: ET.Element) -> None:
+    for child_with_image in root.findall(
+        ".//{http://www.w3.org/2000/svg}image/.."
+    ):
+        for image in child_with_image.findall(
+            "{http://www.w3.org/2000/svg}image"
+        ):
+            if image.attrib.get("{http://www.w3.org/1999/xlink}href") is None:
+                child_with_image.remove(image)
 
 
 def get_files(

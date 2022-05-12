@@ -51,8 +51,14 @@ class ConfluenceRenderer(mistune.HTMLRenderer):
             image_tag = '<ri:url ri:value="{}" />'.format(src)
         else:
             self.attachments.append(src)
+            full_filename = os.path.splitext(os.path.basename(src))
+            file_ext = full_filename[1]
+            filename = full_filename[0]
+            if file_ext.lower() == ".svg":
+                filename = full_filename[0] + "_svg"
+                file_ext = ".png"
             image_tag = '<ri:attachment ri:filename="{}" />\n'.format(
-                os.path.basename(src)
+                filename + file_ext
             )
 
         html += image_tag

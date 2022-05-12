@@ -16,6 +16,7 @@ python-frontmatter = "^1.0.0"
 atlassian-python-api = "^3.21.0"
 tabulate = "^0.8.9"
 click-log = "^0.4.0"
+CairoSVG = "^2.5.2"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
